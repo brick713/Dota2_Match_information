@@ -1,0 +1,10 @@
+# production
+requests[socks]
+beautifulsoup4
+
+# development
+pip-tools
+flake8
+black
+isort
+ipdb

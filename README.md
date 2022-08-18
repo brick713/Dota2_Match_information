@@ -1,2 +1,3 @@
-# Dota2_Match_information
-Get dota2 match information form Liquipedia
+# Dota2 Match Information
+
+Get Dota2 matches information form [Liquipedia](https://liquipedia.net).
