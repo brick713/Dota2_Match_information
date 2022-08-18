@@ -38,10 +38,6 @@ class Liquipedia:
 
     def _parse(self, page):
         source = self._request(page)
-
-        with open("source.html", "w") as f:
-            f.write(source)
-
         return BeautifulSoup(source, features="lxml")
 
 
