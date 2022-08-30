@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from requests import Session
-
+import datetime
+import pytz
 
 class Liquipedia:
     def __init__(self, app_name, game):
@@ -63,7 +64,7 @@ class Dota2(Liquipedia):
         # 1 - Upcoming & Ongoing Matches
         # 2 - Featured Matches Only
         # 3 - Concluded Matches
-        panel = panel_content.find("div", attrs={"data-toggle-area-content": "1"})
+        panel = panel_content.find("div", attrs={"data-toggle-area-content": "2"})
         if not panel:
             raise Exception("No div[data-toggle-area-content=1] found")
 
@@ -101,7 +102,9 @@ class Dota2(Liquipedia):
             if len(match_filler_children) != 2:
                 continue
             [countdown, league] = match_filler_children
-            game["timestamp"] = countdown.find("span", class_="timer-object").get("data-timestamp")
+            timestamp = int(countdown.find("span", class_="timer-object").get("data-timestamp"))
+            timezone = pytz.timezone('Asia/Shanghai')
+            game['start_time'] = datetime.datetime.fromtimestamp(timestamp,timezone).strftime('%m-%d-%a %H:%M')
             game["league"] = league.get_text().rstrip()
 
             games.append(game)
