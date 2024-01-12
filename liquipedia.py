@@ -67,7 +67,6 @@ class Dota2(Liquipedia):
         panel = panel_content.find("div", attrs={"data-toggle-area-content": "2"})
         if not panel:
             raise Exception("No div[data-toggle-area-content=1] found")
-
         matches = panel.find_all("table", class_="infobox_matches_content")
 
         games = []
@@ -84,24 +83,27 @@ class Dota2(Liquipedia):
             team_left_template = team_left.find("span", class_="team-template-text")
             # dont use title, title has `(page does not exist)` sometime
             # whatever child is `a` or `abbr`, we use the get_text directly
-            game["team-left"] = team_left_template.get_text()
-
+            if team_left_template is not None:
+                game["team-left"] = team_left_template.get_text()
             versus_children = versus.findChildren(recursive=False)
-            if len(versus_children) != 2:
-                continue
-            [score, best_of] = versus_children
-            game["score"] = score.get_text()
+            #if len(versus_children) != 2:
+                #continue
+            [best_of] = versus_children
+            #game["score"] = score.get_text()
             game["best-of"] = best_of.find("abbr").get_text()
-
+            
             team_right_template = team_right.find("span", class_="team-template-text")
             # dont use title, title has `(page does not exist)` sometime
             # whatever child is `a` or `abbr`, we use the get_text directly
-            game["team-right"] = team_right_template.get_text()
+            if team_right_template is not None:
+                game["team-right"] = team_right_template.get_text()
 
             match_filler_children = match_filler.findChildren(recursive=False)
-            if len(match_filler_children) != 2:
-                continue
-            [countdown, league] = match_filler_children
+            #if len(match_filler_children) != 2:
+                #continue
+            #[countdown, league] = match_filler_children
+            league = match_filler.find("div", class_="tournament-text")
+            [countdown] = match_filler_children
             timestamp = int(countdown.find("span", class_="timer-object").get("data-timestamp"))
             timezone = pytz.timezone('Asia/Shanghai')
             game['start_time'] = datetime.datetime.fromtimestamp(timestamp,timezone).strftime('%m-%d-%a %H:%M')
@@ -115,9 +117,7 @@ class Dota2(Liquipedia):
 def main():
     dota2 = Dota2("ScoresBot/2.0 (http://www.moyu.life/; hibrick713@gmail.com)")
     games = dota2.get_upcoming_and_ongoing_games()
-
-    for game in games:
-        print(game)
+    print(games)
 
 
 if __name__ == "__main__":
