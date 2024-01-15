@@ -85,6 +85,8 @@ class Dota2(Liquipedia):
             # whatever child is `a` or `abbr`, we use the get_text directly
             if team_left_template is not None:
                 game["team-left"] = team_left_template.get_text()
+            if team_left_template is None:
+                game["team-left"] = 'TBD'
             versus_children = versus.findChildren(recursive=False)
             #if len(versus_children) != 2:
                 #continue
@@ -97,7 +99,8 @@ class Dota2(Liquipedia):
             # whatever child is `a` or `abbr`, we use the get_text directly
             if team_right_template is not None:
                 game["team-right"] = team_right_template.get_text()
-
+            if team_right_template is None:
+                game["team-right"] = 'TBD'
             match_filler_children = match_filler.findChildren(recursive=False)
             #if len(match_filler_children) != 2:
                 #continue
@@ -108,7 +111,6 @@ class Dota2(Liquipedia):
             timezone = pytz.timezone('Asia/Shanghai')
             game['start_time'] = datetime.datetime.fromtimestamp(timestamp,timezone).strftime('%m-%d-%a %H:%M')
             game["league"] = league.get_text().rstrip()
-
             games.append(game)
 
         return games
@@ -117,7 +119,7 @@ class Dota2(Liquipedia):
 def main():
     dota2 = Dota2("ScoresBot/2.0 (http://www.moyu.life/; hibrick713@gmail.com)")
     games = dota2.get_upcoming_and_ongoing_games()
-    print(games)
+    #print(games)
 
 
 if __name__ == "__main__":
